@@ -1,0 +1,12 @@
+name: jbc_population_picker
+title: jbc_population_picker
+username:
+account: trafforddatalab
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3160837
+bundleId: 3819706
+url: https://trafforddatalab.shinyapps.io/jbc_population_picker/
+when: 1604500770.54617
+asMultiple: FALSE
+asStatic: FALSE
