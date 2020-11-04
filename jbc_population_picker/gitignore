@@ -41,5 +41,5 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
-# shinyapps.io
-/rsconnect
+# Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
+rsconnect/
