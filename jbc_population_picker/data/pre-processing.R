@@ -7,7 +7,7 @@ id <- "Liverpool"
 
 # ------------------------------------------------------------------------------
 
-# Area lookups
+# GSS code lookups
 # Source: ONS Open Geography Portal
 # URL: https://geoportal.statistics.gov.uk/
 administrative_lookup <- read_csv("https://opendata.arcgis.com/datasets/e169bb50944747cd83dcfb4dd66555b1_0.csv")
@@ -45,12 +45,22 @@ la <- read_csv(paste0("http://www.nomisweb.co.uk/api/v01/dataset/NM_2002_1.data.
   mutate(geography = "Local authority")
 
 # Electoral ward
-# !Needs to be done manually until API call debugged!
-ward <- read_csv("http://www.nomisweb.co.uk/api/v01/dataset/NM_2010_1.data.csv?geography=1656750747...1656750768,1656750770,1656750769,1656750771...1656750776&date=latest&gender=0...2&c_age=101...191&measures=20100&select=date_name,geography_name,geography_code,gender_name,c_age_name,measures_name,obs_value,obs_status_name") %>% 
-  mutate(geography = "Electoral ward")
+# find Nomis geography code for local authority
+nomis_id <- fromJSON(paste0("https://www.nomisweb.co.uk/api/v01/dataset/NM_2002_1/geography/TYPE448.def.sdmx.json?search=",  URLencode(id))) %>% 
+  pluck("structure", "codelists", "codelist") %>% 
+  as_tibble() %>% 
+  unnest("code") %>% 
+  pull(value)
 
-# ward <- read_csv(paste0("http://www.nomisweb.co.uk/api/v01/dataset/NM_2010_1.data.csv?geography=395", paste0(ward_codes, collapse = ","), "&date=latest&gender=0...2&c_age=101...191&measures=20100&select=date_name,geography_name,geography_code,gender_name,c_age_name,measures_name,obs_value,obs_status_name")) %>% 
-#   mutate(geography = "Electoral ward")
+# find Nomis geography codes for wards within local authority
+nomis_ward_id <- fromJSON(paste0("https://www.nomisweb.co.uk/api/v01/dataset/NM_1_1/geography/", nomis_id, "TYPE397.def.sdmx.json")) %>% 
+  pluck("structure", "codelists", "codelist") %>% 
+  as_tibble() %>% 
+  unnest("code") %>% 
+  pull(value)
+
+ward <- read_csv(paste0("http://www.nomisweb.co.uk/api/v01/dataset/NM_2010_1.data.csv?geography=", paste0(nomis_ward_id, collapse = ","), "&date=latest&gender=0...2&c_age=101...191&measures=20100&select=date_name,geography_name,geography_code,gender_name,c_age_name,measures_name,obs_value,obs_status_name")) %>%
+  mutate(geography = "Electoral ward")
 
 # Middle-layer Super Output Area
 msoa <- read_csv(paste0("http://www.nomisweb.co.uk/api/v01/dataset/NM_2010_1.data.csv?geography=", paste0(msoa_codes, collapse = ","), "&date=latest&gender=0...2&c_age=101...191&measures=20100&select=date_name,geography_name,geography_code,gender_name,c_age_name,measures_name,obs_value,obs_status_name")) %>% 
