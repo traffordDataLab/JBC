@@ -1,6 +1,6 @@
 # Population picker: pre-processing code #
 
-library(tidyverse) ; library(lubridate) ; library(sf)
+library(tidyverse) ; library(jsonlite) ; library(lubridate) ; library(sf)
 
 # Create a string object with the name of the local authority
 id <- "Liverpool"
